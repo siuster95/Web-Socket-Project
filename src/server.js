@@ -9,7 +9,7 @@ let player1id;
 let playersinRoom = 0;
 let Roomnumber = 0;
 
-let colorsSetup = {};
+const colorsSetup = {};
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -66,50 +66,41 @@ io.on('connection', (socket) => {
   socket.emit('Joined', { R, G, B, circleobjs: circleobjs[Roomnumber], Roomnumber });
 
   if (playersinRoom === 2) {
-    io.in(`room ${Roomnumber}`).emit('Start', {bool:true});
+    io.in(`room ${Roomnumber}`).emit('Start', { bool: true });
     Roomnumber += 1;
     playersinRoom = 0;
   }
 
 
-  socket.on("Setup",(data) => {
-    let keys = Object.keys(colorsSetup);
-    let player1id;
-    if(keys.length % 2 === 0)
-    {
-        
-        player1id = socket.id;
-        colorsSetup[socket.id] = data;
-        colorsSetup[socket.id].id = socket.id;
-    }
-    else if(keys.length % 2 === 1)
-    {
-
+  socket.on('Setup', (data) => {
+    const keys = Object.keys(colorsSetup);
+    if (keys.length % 2 === 0) {
+      player1id = socket.id;
       colorsSetup[socket.id] = data;
-      colorsSetup[socket.id].id = socket.id;    
-        
+      colorsSetup[socket.id].id = socket.id;
+    } else if (keys.length % 2 === 1) {
+      colorsSetup[socket.id] = data;
+      colorsSetup[socket.id].id = socket.id;
+
       colorsSetup[player1id].opponent = socket.id;
       colorsSetup[socket.id].opponent = player1id;
-      let player1 = colorsSetup[player1id];
-      let player2 = colorsSetup[socket.id];
+      const player1 = colorsSetup[player1id];
+      const player2 = colorsSetup[socket.id];
 
-      //console.dir(player2);
-      let grid = circleobjs[player1.roomNumber];
+      // console.dir(player2);
+      const grid = circleobjs[player1.roomNumber];
 
-      grid[2][2] = {x:250,y:250,R:player1.R,G:player1.G,B:player1.B};
-      grid[3][3] = {x:350,y:350,R:player1.R,G:player1.G,B:player1.B};
-      grid[2][3] = {x:250,y:350,R:player2.R,G:player2.G,B:player2.B};
-      grid[3][2] = {x:350,y:250,R:player2.R,G:player2.G,B:player2.B};
+      grid[2][2] = { x: 250, y: 250, R: player1.R, G: player1.G, B: player1.B };
+      grid[3][3] = { x: 350, y: 350, R: player1.R, G: player1.G, B: player1.B };
+      grid[2][3] = { x: 250, y: 350, R: player2.R, G: player2.G, B: player2.B };
+      grid[3][2] = { x: 350, y: 250, R: player2.R, G: player2.G, B: player2.B };
 
       circleobjs[player1.roomNumber] = grid;
 
-      io.in(`room ${player1.roomNumber}`).emit("SetupfromServer", grid);
+      io.in(`room ${player1.roomNumber}`).emit('SetupfromServer', grid);
 
-      socket.broadcast.to(player1id).emit("Turn",{turn:true});
-
+      socket.broadcast.to(player1id).emit('Turn', { turn: true });
     }
-
-
   });
 
   console.log('user has joined a room');
@@ -134,7 +125,7 @@ io.on('connection', (socket) => {
 
     io.in(`room ${data.roomNumber}`).emit('UpdatefromServer', (data));
 
-    socket.broadcast.to(colorsSetup[socket.id].opponent).emit("Turn",{turn:true});
+    socket.broadcast.to(colorsSetup[socket.id].opponent).emit('Turn', { turn: true });
 
     console.log('broadcasting circle');
   });
