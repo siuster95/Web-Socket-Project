@@ -74,23 +74,24 @@ io.on('connection', (socket) => {
 
   socket.on("Setup",(data) => {
     let keys = Object.keys(colorsSetup);
-    let data = data;
+    let player1id;
     if(keys.length % 2 === 0)
     {
-        data.id = socket.id;
-        player1id = socket.id;
-        colorsSetup[data.id] = data;
         
+        player1id = socket.id;
+        colorsSetup[socket.id] = data;
+        colorsSetup[socket.id].id = socket.id;
     }
     else if(keys.length % 2 === 1)
     {
-      data.id = socket.id; 
-      colorsSetup[socket.id] = data;
 
-      colorsSetup[player1id].opponent = data.id;
-      colorsSetup[data.id].opponent = player1id;
+      colorsSetup[socket.id] = data;
+      colorsSetup[socket.id].id = socket.id;    
+        
+      colorsSetup[player1id].opponent = socket.id;
+      colorsSetup[socket.id].opponent = player1id;
       let player1 = colorsSetup[player1id];
-      let player2 = colorsSetup[data.id];
+      let player2 = colorsSetup[socket.id];
 
       //console.dir(player2);
       let grid = circleobjs[player1.roomNumber];
