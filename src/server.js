@@ -74,15 +74,15 @@ io.on('connection', (socket) => {
 
   socket.on("Setup",(data) => {
     let keys = Object.keys(colorsSetup);
-    
-    if(keys.length % 2 == 0)
+    let data = data;
+    if(keys.length % 2 === 0)
     {
         data.id = socket.id;
         player1id = socket.id;
         colorsSetup[data.id] = data;
         
     }
-    else if(keys.length % 2 == 1)
+    else if(keys.length % 2 === 1)
     {
       data.id = socket.id; 
       colorsSetup[socket.id] = data;
